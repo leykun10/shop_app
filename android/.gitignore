@@ -1,0 +1,9 @@
+
+gradle-wrapper.jar
+/.gradle
+/captures/
+/gradlew
+/gradlew.bat
+/local.propertiesgit push -u origin main
+/lib/utilities/keys.dart
+GeneratedPluginRegistrant.java
