@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import '../model/product.dart';
@@ -90,109 +92,127 @@ class _EditProductScreenState extends State<EditProductScreen> {
     body: loading?Center(child: CircularProgressIndicator(),):Padding(
 
       padding: const EdgeInsets.all(15.0),
-      child: Form(key: formkey,child: ListView(children: <Widget>[
+      child: Consumer<Products>(
+        builder: (context,products,child) {
+          return Form (key: formkey, child: ListView (children: <Widget>[
 
-        TextFormField(
-          controller: titleController,
-          onFieldSubmitted: (_){
+            TextFormField (
+              controller: titleController,
+              onFieldSubmitted: (_) {
+                FocusScope.of (context).requestFocus (priceFocusNode);
+              },
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration (labelText: "Title"),
+              validator: (value) {
+                if (value.isEmpty) {
+                  return "empty value not accepted";
+                }
+                return null;
+              },)
+            ,
+            TextFormField (
+              onFieldSubmitted: (_) {
+                FocusScope.of (context).requestFocus (descriptionFocus);
+              },
+              controller: priceController,
+              focusNode: priceFocusNode,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration (labelText: "Price"),
+              validator: (value) {
+                if (value.isEmpty) {
+                  return "empty value not accepted";
+                }
+                else if (double.parse (value) == null) {
+                  return "enter a valid price";
+                }
 
-            FocusScope.of(context).requestFocus(priceFocusNode);
-          },
-          textInputAction: TextInputAction.next,
-          decoration: InputDecoration(labelText: "Title"),validator: (value){
-          if(value.isEmpty){
-            return "empty value not accepted";
-          }
-          return null;
-        },)
-      ,
-        TextFormField(
-          onFieldSubmitted: (_){
-            FocusScope.of(context).requestFocus(descriptionFocus);
-          },
-          controller: priceController,
-          focusNode: priceFocusNode,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.next,
-          decoration: InputDecoration(labelText: "Price"),validator: (value){
-          if(value.isEmpty){
-            return "empty value not accepted";
-          }
-          else if(double.parse(value)==null)
-          {return "enter a valid price";}
+                else if (double.parse (value) == 0) {
+                  return " a price should have value greater than 0";
+                }
 
-          else if(double.parse(value)==0)
-          {
-          return " a price should have value greater than 0";
-          }
-
-          return null;
-
-        },),
-        TextFormField(
-          maxLines: 3,
-          focusNode: descriptionFocus,
-          controller: descriptionController,
-          keyboardType: TextInputType.multiline,
-          decoration: InputDecoration(labelText: "Description",),validator: (value){
-          if(value.isEmpty){
-            return "error";
-          }
-          if(value.length<10){
-            return "a description should have at least 10 characters";
-          }
-          return null;
-        },),Row(crossAxisAlignment: CrossAxisAlignment.end,children: <Widget>[
-          Container(child: urlController.text.isEmpty?Text("No image"):
-           FittedBox(child: Image.network(urlController.text,fit: BoxFit.cover,),)
-            ,width: 100,
-          height: 100,
-          margin: EdgeInsets.fromLTRB(0, 10, 10, 0),
-          decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1)),)
-        ,
-        Expanded(child: TextFormField(decoration: InputDecoration(labelText: "Enter a URL"),
-          keyboardType: TextInputType.url,
-          textInputAction: TextInputAction.done,
-          controller: urlController,
-          focusNode: urlFocusNode,
-          validator: (value){
-            if (value.isEmpty) {
-              return 'Please enter an image URL.';
-            }
-            if (!value.startsWith('http') &&
-                !value.startsWith('https')) {
-              return 'Please enter a valid URL.';
-            }
-            if (value.endsWith('.png') &&
-                value.endsWith('.jpg') &&
-                value.endsWith('.jpeg')) {
-              return 'Please enter a valid image URL.';
-            }
-            return null;
-
-          },
-          onFieldSubmitted: (_){
-
-          formState();
-          },
-        onSaved: (_){
-
-          product=widget.id["new"]?Product(id: DateTime.now().toString(),title: titleController.text,
-              price:double.parse(priceController.text ),description: descriptionController.text,
-              imageUrl:urlController.text ,isFavourite: false):Product(id: editedProduct.id,title: titleController.text,
-              price:double.parse(priceController.text ),description: descriptionController.text,
-              imageUrl:urlController.text ,isFavourite: editedProduct.isFavourite);
+                return null;
+              },),
+            TextFormField (
+              maxLines: 3,
+              focusNode: descriptionFocus,
+              controller: descriptionController,
+              keyboardType: TextInputType.multiline,
+              decoration: InputDecoration (labelText: "Description",),
+              validator: (value) {
+                if (value.isEmpty) {
+                  return "error";
+                }
+                if (value.length < 10) {
+                  return "a description should have at least 10 characters";
+                }
+                return null;
+              },),
+            Row (crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[
+              Container (child: urlController.text.isEmpty ? Text ("No image") :
+              FittedBox (child: Image.network (
+                urlController.text, fit: BoxFit.cover,),)
+                ,
+                width: 100,
+                height: 100,
+                margin: EdgeInsets.fromLTRB (0, 10, 10, 0),
+                decoration: BoxDecoration (border: Border.all (
+                    color: Colors.grey, width: 1)),)
+              ,
+              Expanded (child: TextFormField (decoration: InputDecoration (
+                  labelText: "Enter a URL"),
+                keyboardType: TextInputType.url,
+                textInputAction: TextInputAction.done,
+                controller: urlController,
+                focusNode: urlFocusNode,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter an image URL.';
+                  }
+                  if (!value.startsWith ('http') &&
+                      !value.startsWith ('https')) {
+                    return 'Please enter a valid URL.';
+                  }
+                  if (value.endsWith ('.png') &&
+                      value.endsWith ('.jpg') &&
+                      value.endsWith ('.jpeg')) {
+                    return 'Please enter a valid image URL.';
+                  }
+                  return null;
+                },
+                onFieldSubmitted: (_) {
+                  formState ();
+                },
+                onSaved: (_) {
+                  product = widget.id["new"] ? Product (
+                      id: DateTime.now ().toString (),
+                      title: titleController.text,
+                      price: double.parse (priceController.text),
+                      description: descriptionController.text,
+                      imageUrl: urlController.text,
+                      isFavourite: false) : Product (id: editedProduct.id,
+                      title: titleController.text,
+                      price: double.parse (priceController.text),
+                      description: descriptionController.text,
+                      imageUrl: urlController.text,
+                      isFavourite: editedProduct.isFavourite);
+                },
 
 
-        },
+              ),)
+            ],)
+            ,
+            SizedBox (height: 20,),
+            RaisedButton (
+              color: Colors.purple,
+              child: Text ("Submit",
+                style: TextStyle (fontSize: 22, color: Colors.white),),
+              onPressed: () {
+                formState();
+              },)
+          ],),);
 
-
-        ),)],)
-      ,
-      FlatButton(child: Text("submit"),onPressed: (){
-
-      },)
-      ],),),
+        }),
     ),);
   }
 }
