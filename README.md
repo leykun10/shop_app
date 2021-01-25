@@ -1,5 +1,7 @@
 # shopapp
 
+Inspired by Academind
+
 Flutter ecommerce app with  provider package for state management and firebase as a backend service.
 Features: authentication with firebase api
           CRUD opeation with firebase realtime products.
@@ -12,7 +14,7 @@ Screen shots
 Login Features
 
 <p float="left">
-  <img src="/ScreenShots/Screenshot_20210120-092957.jpg" width="150" />
+  <img src="/ScreenShots/Screenshot_20210125-102744.jpg" width="150" />
   <img src="/ScreenShots/Screenshot_20210125-102837.jpg" width="150" />
  
 </p>
